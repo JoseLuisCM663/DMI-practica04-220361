@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:widget_app_220361/presentation/providers/discover_provider.dart';
+import 'package:widget_app_220361/presentation/screens/discover/discover_screens.dart';
 import 'package:widget_app_220361/theme/app_theme.dart';
 
 
@@ -11,15 +14,13 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return  MultiProvider(
+      providers:[ChangeNotifierProvider(create:(_) => DiscoverProvider())],
+      child: MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme(selectedColor: 1).getTheme(),
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Widget App 220361')),//AppBar
-        body: Center(
-          child: FilledButton(onPressed:(){},child:Text('Click me')),
-        ),
-      ),
+      home:const DiscoverScreen(),
+      )
     );
   }
 }

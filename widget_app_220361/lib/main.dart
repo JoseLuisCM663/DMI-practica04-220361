@@ -15,8 +15,9 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  MultiProvider(
-      providers:[ChangeNotifierProvider(create:(_) => DiscoverProvider())],
+      providers:[ChangeNotifierProvider(create:(_) => DiscoverProvider()..loadNextPage())],
       child: MaterialApp(
+        title: "toktik",
       debugShowCheckedModeBanner: false,
       theme: AppTheme(selectedColor: 1).getTheme(),
       home:const DiscoverScreen(),

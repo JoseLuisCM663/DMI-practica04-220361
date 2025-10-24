@@ -71,15 +71,9 @@ flutter:
 
 ## 📱 Sección de Capturas
 
-
-### 🔵 Pantalla principal
-
-![Pantalla principal](assets/screenshots/main_screen.png)
-
-
 ### 🔴 Botón de pausa en funcionamiento
 
-![Botón pausa](assets/screenshots/pause_button.png)
+![Botón pausa](DMI-practica04-220361\widget_app_220361\assets\screenshots\pause_button.png)
 
 ### 🟡 Botón de play en funcionamiento
 

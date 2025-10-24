@@ -73,7 +73,7 @@ flutter:
 
 ### 🔴 Botón de pausa en funcionamiento
 
-![Botón pausa](widget_app_220361\assets\screenshots\pause_button.png)
+![Botón pausa](widget_app_220361/assets/screenshots/pause_button.png)
 
 ### 🟡 Botón de play en funcionamiento
 

@@ -3,13 +3,21 @@ import 'package:video_player/video_player.dart';
 import 'package:widget_app_220361/presentation/widgets/video/video_background.dart';
 
 class FullScreenPlayer extends StatefulWidget {
-  final String videoURL;
+  final String videoUrl;
   final String caption;
+  final bool isPlaying;
+  final bool isMuted;
+  final Function(bool)? onPlayPause;
+  final Function(bool)? onMuteUnmute;
 
   const FullScreenPlayer({
     super.key,
-    required this.videoURL,
+    required this.videoUrl,
     required this.caption,
+    this.isPlaying = true,
+    this.isMuted = false, // Cambiado a false por defecto (con sonido)
+    this.onPlayPause,
+    this.onMuteUnmute,
   });
 
   @override
@@ -18,47 +26,54 @@ class FullScreenPlayer extends StatefulWidget {
 
 class _FullScreenPlayerState extends State<FullScreenPlayer> {
   late VideoPlayerController controller;
-  late Future<void> _initializeVideoPlayerFuture;
-
-  bool _showIcon = false;
-  IconData _iconData = Icons.play_arrow;
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-
-    controller = VideoPlayerController.asset(widget.videoURL)
-      ..setVolume(0)
-      ..setLooping(true);
-
-    _initializeVideoPlayerFuture = controller.initialize().then((_) {
-      controller.play();
-      setState(() {
-        _iconData = Icons.pause; // inicia reproduciendo
-      });
-    });
+    _initializeVideo();
   }
 
-  void _togglePlayPause() {
-    setState(() {
-      if (controller.value.isPlaying) {
-        controller.pause();
-        _iconData = Icons.play_arrow;
-      } else {
-        controller.play();
-        _iconData = Icons.pause;
-      }
-      _showIcon = true;
-    });
+  void _initializeVideo() async {
+    controller = VideoPlayerController.asset(widget.videoUrl)
+      ..setVolume(widget.isMuted ? 0 : 100)
+      ..setLooping(true);
 
-    // Oculta el ícono después de 800 ms
-    Future.delayed(const Duration(milliseconds: 800), () {
+    try {
+      await controller.initialize();
+      if (widget.isPlaying) {
+        controller.play();
+      }
       if (mounted) {
         setState(() {
-          _showIcon = false;
+          _isInitialized = true;
         });
       }
-    });
+    } catch (e) {
+      print('Error initializing video: $e');
+    }
+  }
+
+  @override
+  void didUpdateWidget(FullScreenPlayer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Solo actualizar si el video está inicializado
+    if (_isInitialized) {
+      // Actualizar reproducción cuando cambia el estado
+      if (widget.isPlaying != oldWidget.isPlaying) {
+        if (widget.isPlaying) {
+          controller.play();
+        } else {
+          controller.pause();
+        }
+      }
+
+      // Actualizar volumen cuando cambia el estado de mute
+      if (widget.isMuted != oldWidget.isMuted) {
+        controller.setVolume(widget.isMuted ? 0 : 100);
+      }
+    }
   }
 
   @override
@@ -67,58 +82,61 @@ class _FullScreenPlayerState extends State<FullScreenPlayer> {
     super.dispose();
   }
 
+  void _togglePlayPause() {
+    final newPlayingState = !widget.isPlaying;
+    widget.onPlayPause?.call(newPlayingState);
+  }
+
+  void _toggleMute() {
+    final newMutedState = !widget.isMuted;
+    widget.onMuteUnmute?.call(newMutedState);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _initializeVideoPlayerFuture,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
+    if (!_isInitialized) {
+      return const Center(
+        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+      );
+    }
 
-        if (snapshot.connectionState != ConnectionState.done) {
-          return const Center(child: CircularProgressIndicator(strokeWidth: 2));
-        }
+    return GestureDetector(
+      onTap: _togglePlayPause,
+      child: AspectRatio(
+        aspectRatio: controller.value.aspectRatio,
+        child: Stack(
+          children: [
+            VideoPlayer(controller),
 
-        if (!controller.value.isInitialized) {
-          return const Center(child: Text('Video no inicializado'));
-        }
+            // Gradiente
+            VideoBackground(stops: const [0.8, 1.0]),
 
-        return GestureDetector(
-          onTap: _togglePlayPause,
-          child: AspectRatio(
-            aspectRatio: controller.value.aspectRatio,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                VideoPlayer(controller),
-
-                // Gradiente inferior
-                VideoBackground(stops: const [0.8, 1.0]),
-
-                // Ícono central (animado)
-                if (_showIcon)
-                  AnimatedOpacity(
-                    opacity: _showIcon ? 1 : 0,
-                    duration: const Duration(milliseconds: 200),
-                    child: Icon(
-                      _iconData,
-                      color: Colors.white70,
-                      size: 80,
-                    ),
-                  ),
-
-                // Texto inferior
-                Positioned(
-                  bottom: 20,
-                  left: 20,
-                  child: _VideoCaption(caption: widget.caption),
-                ),
-              ],
+            // Texto
+            Positioned(
+              bottom: 50,
+              left: 20,
+              child: _VideoCaption(caption: widget.caption),
             ),
-          ),
-        );
-      },
+
+            // Indicador de play/pause en el centro
+            if (!widget.isPlaying)
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: const Icon(
+                    Icons.play_arrow,
+                    size: 50,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -126,7 +144,7 @@ class _FullScreenPlayerState extends State<FullScreenPlayer> {
 class _VideoCaption extends StatelessWidget {
   final String caption;
 
-  const _VideoCaption({required this.caption});
+  const _VideoCaption({super.key, required this.caption});
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +156,10 @@ class _VideoCaption extends StatelessWidget {
       child: Text(
         caption,
         maxLines: 2,
-        style: titleStyle?.copyWith(color: Colors.white),
+        style: titleStyle?.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }

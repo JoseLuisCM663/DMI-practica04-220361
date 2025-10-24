@@ -73,27 +73,27 @@ flutter:
 
 ### 🔴 Botón de pausa en funcionamiento
 
-![Botón pausa](DMI-practica04-220361\widget_app_220361\assets\screenshots\pause_button.png)
+![Botón pausa](widget_app_220361\assets\screenshots\pause_button.png)
 
 ### 🟡 Botón de play en funcionamiento
 
-![Botón play](assets/screenshots/play_button.png)
+![Botón play](widget_app_220361\assets\screenshots\play_button.png)
 
 ### 🟤 Control de volumen --- Cambio de ícono al silenciar sonido
 
-![Silenciar sonido](assets/screenshots/volume_off.png)
+![Silenciar sonido](widget_app_220361\assets\screenshots\volume_off.png)
 
 ### ⚪ Control de volumen --- Cambio de ícono al activar sonido
 
-![Activar sonido](assets/screenshots/volume_on.png)
+![Activar sonido](widget_app_220361\assets\screenshots\volume_on.png)
 
 ### ⚫ Funcionamiento del scroll en los videos
 
-![Scroll en videos](assets/screenshots/scroll_videos.png)
+![Scroll en videos](widget_app_220361\assets\screenshots\scroll_videos.png)
 
 ### 🟣 Vista general con íconos implementados
 
-![Vista general](assets/screenshots/general_view.png)
+![Vista general](widget_app_220361\assets\screenshots\general_view.png)
 
 ------------------------------------------------------------------------
 

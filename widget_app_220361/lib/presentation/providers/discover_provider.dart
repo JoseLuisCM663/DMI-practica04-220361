@@ -4,7 +4,7 @@ import 'package:widget_app_220361/infrastructure/models/local_video_model.dart';
 import 'package:widget_app_220361/shared/data/local_video_post.dart';
 
 class DiscoverProvider extends ChangeNotifier {
-  bool initialLoding = true;
+  bool initialLoading = true;
   List<VideoPost> videos = [];
 
   Future<void> loadNextPage() async {
@@ -13,8 +13,9 @@ class DiscoverProvider extends ChangeNotifier {
     final List<VideoPost> newVideos = videoPost
         .map((video) => LocalVideoModel.fromJson(video).toVideoPostEntity())
         .toList();
+
     videos.addAll(newVideos);
-    initialLoding = false;
+    initialLoading = false;
     notifyListeners();
   }
 }

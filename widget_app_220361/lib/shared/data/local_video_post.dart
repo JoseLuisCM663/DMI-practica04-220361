@@ -2,26 +2,31 @@ List<Map<String, dynamic>> videoPost = [
   {'name':'video1',
   'videoURL':'assets/videos/cascada.mp4',
   'likes':12345,
-  'views':256789
+  'views':256789,
+  'comments':3456234
   },
   {'name':'video2',
   'videoURL':'assets/videos/cerebro.mp4',
   'likes':1246534,
-  'views':256789222
+  'views':256789222,
+  'comments':3456234
   },
   {'name':'video3',
   'videoURL':'assets/videos/gato.mp4',
   'likes':123456,
-  'views':2516789
+  'views':2516789,
+  'comments':3456234
   },
   {'name':'video4',
   'videoURL':'assets/videos/grasa.mp4',
   'likes':12431,
-  'views':225467643215
+  'views':225467643215,
+  'comments':3456234
   },
   {'name':'video5',
   'videoURL':'assets/videos/lactia.mp4',
   'likes':12213245364,
-  'views':2521345465768
+  'views':2521345465768,
+  'comments':3456234
   },
   ];

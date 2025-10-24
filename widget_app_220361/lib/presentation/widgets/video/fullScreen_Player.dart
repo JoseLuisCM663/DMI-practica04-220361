@@ -18,6 +18,10 @@ class FullScreenPlayer extends StatefulWidget {
 
 class _FullScreenPlayerState extends State<FullScreenPlayer> {
   late VideoPlayerController controller;
+  late Future<void> _initializeVideoPlayerFuture;
+
+  bool _showIcon = false;
+  IconData _iconData = Icons.play_arrow;
 
   @override
   void initState() {
@@ -25,8 +29,36 @@ class _FullScreenPlayerState extends State<FullScreenPlayer> {
 
     controller = VideoPlayerController.asset(widget.videoURL)
       ..setVolume(0)
-      ..setLooping(true)
-      ..play();
+      ..setLooping(true);
+
+    _initializeVideoPlayerFuture = controller.initialize().then((_) {
+      controller.play();
+      setState(() {
+        _iconData = Icons.pause; // inicia reproduciendo
+      });
+    });
+  }
+
+  void _togglePlayPause() {
+    setState(() {
+      if (controller.value.isPlaying) {
+        controller.pause();
+        _iconData = Icons.play_arrow;
+      } else {
+        controller.play();
+        _iconData = Icons.pause;
+      }
+      _showIcon = true;
+    });
+
+    // Oculta el ícono después de 800 ms
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) {
+        setState(() {
+          _showIcon = false;
+        });
+      }
+    });
   }
 
   @override
@@ -37,31 +69,48 @@ class _FullScreenPlayerState extends State<FullScreenPlayer> {
 
   @override
   Widget build(BuildContext context) {
-
     return FutureBuilder(
-      future: controller.initialize(),
+      future: _initializeVideoPlayerFuture,
       builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
         if (snapshot.connectionState != ConnectionState.done) {
           return const Center(child: CircularProgressIndicator(strokeWidth: 2));
         }
 
+        if (!controller.value.isInitialized) {
+          return const Center(child: Text('Video no inicializado'));
+        }
+
         return GestureDetector(
-          onTap: () {
-            if (controller.value.isPlaying) {
-              controller.pause();
-              return;
-            }
-            controller.play();
-          },
+          onTap: _togglePlayPause,
           child: AspectRatio(
             aspectRatio: controller.value.aspectRatio,
             child: Stack(
+              alignment: Alignment.center,
               children: [
                 VideoPlayer(controller),
-                VideoBackground(stops: [0.8, 1.0]),
 
+                // Gradiente inferior
+                VideoBackground(stops: const [0.8, 1.0]),
+
+                // Ícono central (animado)
+                if (_showIcon)
+                  AnimatedOpacity(
+                    opacity: _showIcon ? 1 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(
+                      _iconData,
+                      color: Colors.white70,
+                      size: 80,
+                    ),
+                  ),
+
+                // Texto inferior
                 Positioned(
-                  bottom: 50,
+                  bottom: 20,
                   left: 20,
                   child: _VideoCaption(caption: widget.caption),
                 ),
@@ -86,7 +135,11 @@ class _VideoCaption extends StatelessWidget {
 
     return SizedBox(
       width: size.width * 0.6,
-      child: Text(caption, maxLines: 2, style: titleStyle),
+      child: Text(
+        caption,
+        maxLines: 2,
+        style: titleStyle?.copyWith(color: Colors.white),
+      ),
     );
   }
 }

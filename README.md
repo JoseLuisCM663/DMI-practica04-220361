@@ -95,6 +95,13 @@ flutter:
 
 ![Vista general](widget_app_220361/assets/screenshots/general_view.png)
 
+### 🟣 Icono
+
+![Vista general](widget_app_220361/assets/screenshots/icon.png)
+
+### 🟣 pantalla de carga
+
+![Vista general](widget_app_220361/assets/screenshots/carga.png)
 ------------------------------------------------------------------------
 
 ## 🧠 Tecnologías utilizadas

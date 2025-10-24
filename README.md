@@ -72,10 +72,6 @@ flutter:
 ## 📱 Sección de Capturas
 
 
-### 🟢 Splash screen
-
-![Splash screen](assets/screenshots/splash_screen.png)
-
 ### 🔵 Pantalla principal
 
 ![Pantalla principal](assets/screenshots/main_screen.png)

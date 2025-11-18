@@ -14,7 +14,7 @@
 ## **App de Reproducción de Videos (Stateless y Statefull Widgets)**
 ---
 
-### ALUMNA:  
+### ALUMNO:  
 ## **Jose Luis Campos Marquez**
 
 ---
